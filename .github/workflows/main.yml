@@ -30,7 +30,7 @@ jobs:
         pip install -r requirements.txt
     - name: Check format with black
       run: |
-        black --check symjax/ tests/ setup.py
+        black --check numpy_datasets/ tests/ setup.py
     - name: Install sndfile
       run: |
         sudo apt-get install libsndfile1

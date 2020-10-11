@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: numpy-datasets
-Version: 0+untagged.3.gc3b95c0.dirty
+Version: 0.0.3+0.g570cf04.dirty
 Summary: Datasets downloading/batching/processing in Numpy
 Home-page: https://github.com/RandallBalestriero/numpy-datasets.git
 Author: Randall Balestriero
@@ -22,7 +22,7 @@ Description:
         * Third, numpy-datasets offers many options to transparently deal with very large datasets. For example, automatic mini-batching with a priori caching of the next batch, online preprocessing, and the likes.
         * Fourth, numpy-datasets does not only focus on computer vision datasets but also offers plenty in time-series datasets, with a constantly groing collection of implemented datasets.
         
-        ## Examples
+        ## Minimal Example
         
         ```python
         import sys
