@@ -1,5 +1,6 @@
 *.npz
 *.pyc
+numpy_datasets.egg-info/**
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: numpy-datasets
-Version: 0.0.3+1.gf5e9826
+Version: 0.0.4+0.gf064867.dirty
 Summary: Datasets downloading/batching/processing in Numpy
 Home-page: https://github.com/RandallBalestriero/numpy-datasets.git
 Author: Randall Balestriero
