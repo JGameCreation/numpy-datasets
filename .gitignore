@@ -6,7 +6,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.pkl
-
+numpy_datasets.egg-info/
 # C extensions
 *.so
 
