@@ -1,2 +1,2 @@
 include versioneer.py
-include symjax/_version.py
+include numpy_datasets/_version.py
