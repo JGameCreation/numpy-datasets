@@ -12,3 +12,4 @@ sphinxcontrib-serializinghtml
 sphinx-execute-code
 sphinx-gallery
 pillow
+matplotlib

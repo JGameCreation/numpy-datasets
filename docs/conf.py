@@ -21,7 +21,7 @@ from sphinx_gallery.scrapers import matplotlib_scraper
 
 sys.path.insert(0, os.path.abspath(".."))
 
-MOCK_MODULES = ["soundfile", "matplotlib"]
+MOCK_MODULES = ["soundfile"]
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
