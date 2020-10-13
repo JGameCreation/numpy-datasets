@@ -14,4 +14,5 @@ from . import (
     stl10,
     rock_paper_scissors,
     celeb,
+    face_pointing,
 )
