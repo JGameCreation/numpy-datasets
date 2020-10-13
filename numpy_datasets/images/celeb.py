@@ -85,9 +85,7 @@ def load(path=None):
 
     t0 = time.time()
 
-    archive = zipfile.ZipFile(
-        os.path.join(path, "celebA", "celeba-dataset.zip"), "r"
-    )
+    archive = zipfile.ZipFile(os.path.join(path, "celebA", "celeba-dataset.zip"), "r")
     images = []
     ids = []
     for name in tqdm(archive.namelist()):
@@ -95,7 +93,9 @@ def load(path=None):
             images.append(mpimg.imread(archive.open(name), "jpg"))
 
     atts = np.loadtxt(
-        archive.open("list_attr_celeba.csv"), delimiter=",", dtype=str,
+        archive.open("list_attr_celeba.csv"),
+        delimiter=",",
+        dtype=str,
     )
     names = atts[0, 1:]
 
