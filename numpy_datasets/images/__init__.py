@@ -13,4 +13,5 @@ from . import (
     cub200,
     stl10,
     rock_paper_scissors,
+    celeb,
 )
