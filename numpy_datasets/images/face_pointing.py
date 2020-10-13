@@ -10,23 +10,12 @@ from typing import Any, Callable, List, Iterable, Optional, TypeVar
 from ..utils import download_dataset
 
 _CITATION = """\
-@inproceedings{conf/iccv/LiuLWT15,
-  added-at = {2018-10-09T00:00:00.000+0200},
-  author = {Liu, Ziwei and Luo, Ping and Wang, Xiaogang and Tang, Xiaoou},
-  biburl = {https://www.bibsonomy.org/bibtex/250e4959be61db325d2f02c1d8cd7bfbb/dblp},
-  booktitle = {ICCV},
-  crossref = {conf/iccv/2015},
-  ee = {http://doi.ieeecomputersociety.org/10.1109/ICCV.2015.425},
-  interhash = {3f735aaa11957e73914bbe2ca9d5e702},
-  intrahash = {50e4959be61db325d2f02c1d8cd7bfbb},
-  isbn = {978-1-4673-8391-2},
-  keywords = {dblp},
-  pages = {3730-3738},
-  publisher = {IEEE Computer Society},
-  timestamp = {2018-10-11T11:43:28.000+0200},
-  title = {Deep Learning Face Attributes in the Wild.},
-  url = {http://dblp.uni-trier.de/db/conf/iccv/iccv2015.html#LiuLWT15},
-  year = 2015
+@inproceedings{gourier2004estimating,
+  title={Estimating face orientation from robust detection of salient facial features},
+  author={Gourier, Nicolas and Hall, Daniela and Crowley, James L},
+  booktitle={ICPR International Workshop on Visual Observation of Deictic Gestures},
+  year={2004},
+  organization={Citeseer}
 }
 """
 
@@ -49,21 +38,26 @@ _urls.update(
 
 
 def load(path=None):
-    """
-    CelebFaces Attributes Dataset (CelebA) is a large-scale face attributes dataset
-     with more than 200K celebrity images, each with 40 attribute annotations. The \
-    images in this dataset cover large pose variations and background clutter. \
-    CelebA has large diversities, large quantities, and rich annotations, including\
-     - 10,177 number of identities,
-     - 202,599 number of face images, and
-     - 5 landmark locations, 40 binary attributes annotations per image.
-    The dataset can be employed as the training and test sets for the following \
-    computer vision tasks: face attribute recognition, face detection, and landmark\
-     (or facial part) localization.
-    Note: CelebA dataset may contain potential bias. The fairness indicators
-    [example](https://github.com/tensorflow/fairness-indicators/blob/master/fairness_indicators/documentation/examples/Fairness_Indicators_TFCO_CelebA_Case_Study.ipynb)
-    goes into detail about several considerations to keep in mind while using the
-    CelebA dataset.
+    """head angle classification
+    The head pose database consists of 15 sets of images. Each set contains of 2 series of 93 images of the same person at different poses. There are 15 people in the database, wearing glasses or not and having various skin color. The pose, or head orientation is determined by 2 angles (h,v), which varies from -90 degrees to +90 degrees. Here is a sample of a serie :
+
+     PersonID = {01, ..., 15}:
+                stands for the number of the person.
+
+    Serie =  {1, 2}
+                stands for the number of the serie.
+
+    Number = {00, 01, ..., 92}
+                the number of the file in the directory.
+
+    VerticalAngle = {-90, -60, -30, -15, 0, +15, +30, +60, +90}
+
+    HorizontalAngle = {-90, -75, -60, -45, -30, -15, 0, +15, +30, +45, +60, +75, +90}
+
+    All images have been taken using the FAME Platform of the PRIMA Team in INRIA Rhone-Alpes. To obtain different poses, we have put markers in the whole room. Each marker corresponds to a pose (h,v). Post-it are used as markers. The whole set of post-it covers a half-sphere in front of the person.
+
+    In order to obtain the face in the center of the image, the person is asked to adjust the chair to see the device in front of him. After this initialization phase, we ask the person to stare successively at 93 post-it notes, without moving his eyes. This second phase just takes a few minutes.
+
     Parameters
     ----------
         path: str (optional)
