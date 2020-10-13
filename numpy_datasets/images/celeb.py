@@ -31,7 +31,7 @@ _CITATION = """\
 
 def download(path: str) -> None:
     if not os.path.exists(os.path.join(path, "celeba-dataset.zip")):
-        cwd = os.cwd()
+        cwd = os.getcwd()
         os.chdir(path)
         os.system("kaggle datasets download -d jessicali9530/celeba-dataset")
         os.chdir(cwd)
