@@ -3,6 +3,7 @@ import numpy as np
 from ..utils import download_dataset
 import time
 
+_source = "https://github.com/rois-codh/kmnist/blob/master/README.md"
 
 cite = """
 @online{clanuwat2018deep,

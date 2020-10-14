@@ -4,6 +4,7 @@
 from . import (
     mnist,
     kmnist,
+    amnist,
     emnist,
     fashionmnist,
     dsprites,
