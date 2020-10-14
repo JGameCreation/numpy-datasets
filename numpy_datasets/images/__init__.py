@@ -4,7 +4,8 @@
 from . import (
     mnist,
     kmnist,
-    amnist,
+    arabic_characters,
+    arabic_digits,
     emnist,
     fashionmnist,
     dsprites,

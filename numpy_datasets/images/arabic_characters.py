@@ -3,6 +3,7 @@ import numpy as np
 from ..utils import download_dataset
 import time
 import io
+from tqdm import tqdm
 import matplotlib.image as mpimg
 from zipfile import ZipFile
 
@@ -74,8 +75,7 @@ def load(path=None):
     train_labels = []
     test_labels = []
     with ZipFile(os.path.join(path, _name, "TestImages32x32.zip")) as archive:
-        for entry in archive.infolist():
-            print(entry.filename)
+        for entry in tqdm(archive.infolist()):
             if ".png" not in entry.filename:
                 continue
             content = archive.read(entry)
@@ -83,8 +83,7 @@ def load(path=None):
             test_labels.append(int(entry.filename.split("_")[-1][:-4]))
 
     with ZipFile(os.path.join(path, _name, "TrainImages32x32.zip")) as archive:
-        for entry in archive.infolist():
-            print(entry.filename)
+        for entry in tqdm(archive.infolist()):
             if ".png" not in entry.filename:
                 continue
             content = archive.read(entry)
