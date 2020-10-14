@@ -7,12 +7,23 @@ import zipfile
 import matplotlib.image as mpimg
 import urllib
 import numpy as np
+from ..utils import download_dataset
 
 
 __author__ = "Randall Balestriero"
 
+_name = "ibeans"
 
-class ibeans:
+classes = ["angular_leaf_spot", "bean_rust", "healthy"]
+
+_urls = {
+    "https://storage.googleapis.com/ibeans/train.zip": "train.zip",
+    "https://storage.googleapis.com/ibeans/test.zip": "test.zip",
+    "https://storage.googleapis.com/ibeans/validation.zip": "validation.zip",
+}
+
+
+def load(path=None):
     """Plant images classification.
 
     This dataset is of leaf images taken in the field in different
@@ -51,121 +62,73 @@ class ibeans:
     Data Released   20-January-2020
     License     MIT
     Credits     Makerere AI Lab
+
+    Parameters
+    ----------
+        path: str (optional)
+            default ($DATASET_PATH), the path to look for the data and
+            where the data will be downloaded if not present
+
+    Returns
+    -------
+
+        train_images: array
+
+        train_labels: array
+
+        valid_images: array
+
+        valid_labels: array
+
+        test_images: array
+
+        test_labels: array
+
     """
 
-    classes = ["angular_leaf_spot", "bean_rust", "healthy"]
+    download_dataset(path, _name, _urls)
 
-    @staticmethod
-    def download(path):
-        """
-        Download the ibeans dataset and store the result into the given
-        path
+    t0 = time.time()
 
-        Parameters
-        ----------
+    # Loading the file
+    train_images = list()
+    train_labels = list()
+    f = zipfile.ZipFile(path + "ibeans/train.zip")
+    for filename in f.namelist():
+        if ".jpg" not in filename:
+            continue
+        train_images.append(mpimg.imread(io.BytesIO(f.read(filename)), "jpg"))
+        train_labels.append(ibeans.classes.index(filename.split("/")[1]))
 
-            path: str
-                the path where the downloaded files will be stored. If the
-                directory does not exist, it is created.
-        """
+    # Loading the file
+    test_images = list()
+    test_labels = list()
+    f = zipfile.ZipFile(path + "ibeans/test.zip")
+    for filename in f.namelist():
+        if ".jpg" not in filename:
+            continue
+        test_images.append(mpimg.imread(io.BytesIO(f.read(filename)), "jpg"))
+        test_labels.append(ibeans.classes.index(filename.split("/")[1]))
 
-        # Check if directory exists
-        if not os.path.isdir(path + "ibeans"):
-            print("Creating mnist Directory")
-            os.mkdir(path + "ibeans")
-        # Check if file exists
-        if not os.path.exists(path + "ibeans/train.zip"):
-            url = "https://storage.googleapis.com/ibeans/train.zip"
-            urllib.request.urlretrieve(url, path + "ibeans/train.zip")
+    # Loading the file
+    valid_images = list()
+    valid_labels = list()
+    f = zipfile.ZipFile(path + "ibeans/validation.zip")
+    for filename in f.namelist():
+        if ".jpg" not in filename:
+            continue
+        valid_images.append(mpimg.imread(io.BytesIO(f.read(filename)), "jpg"))
+        valid_labels.append(ibeans.classes.index(filename.split("/")[1]))
 
-        # Check if file exists
-        if not os.path.exists(path + "ibeans/test.zip"):
-            url = "https://storage.googleapis.com/ibeans/test.zip"
-            urllib.request.urlretrieve(url, path + "ibeans/test.zip")
+    dataset = {
+        "train_set/images": np.array(train_images),
+        "test_set/images": np.array(test_images),
+        "valid_set/images": np.array(valid_images),
+        "train_set/labels": np.array(train_labels),
+        "test_set/labels": np.array(test_labels),
+        "valid_set/labels": np.array(valid_labels),
+    }
 
-        # Check if file exists
-        if not os.path.exists(path + "ibeans/validation.zip"):
-            url = "https://storage.googleapis.com/ibeans/validation.zip"
-            urllib.request.urlretrieve(url, path + "ibeans/validation.zip")
+    print("Dataset ibeans loaded in {0:.2f}s.".format(time.time() - t0))
 
-    @staticmethod
-    def load(path=None):
-        """
-        Parameters
-        ----------
-            path: str (optional)
-                default ($DATASET_PATH), the path to look for the data and
-                where the data will be downloaded if not present
-
-        Returns
-        -------
-
-            train_images: array
-
-            train_labels: array
-
-            valid_images: array
-
-            valid_labels: array
-
-            test_images: array
-
-            test_labels: array
-
-        """
-
-        if path is None:
-            path = os.environ["DATASET_PATH"]
-
-        ibeans.download(path)
-
-        t0 = time.time()
-
-        # Loading the file
-        train_images = list()
-        train_labels = list()
-        f = zipfile.ZipFile(path + "ibeans/train.zip")
-        for filename in f.namelist():
-            if ".jpg" not in filename:
-                continue
-            train_images.append(mpimg.imread(io.BytesIO(f.read(filename)), "jpg"))
-            train_labels.append(ibeans.classes.index(filename.split("/")[1]))
-
-        # Loading the file
-        test_images = list()
-        test_labels = list()
-        f = zipfile.ZipFile(path + "ibeans/test.zip")
-        for filename in f.namelist():
-            if ".jpg" not in filename:
-                continue
-            test_images.append(mpimg.imread(io.BytesIO(f.read(filename)), "jpg"))
-            test_labels.append(ibeans.classes.index(filename.split("/")[1]))
-
-        # Loading the file
-        valid_images = list()
-        valid_labels = list()
-        f = zipfile.ZipFile(path + "ibeans/validation.zip")
-        for filename in f.namelist():
-            if ".jpg" not in filename:
-                continue
-            valid_images.append(mpimg.imread(io.BytesIO(f.read(filename)), "jpg"))
-            valid_labels.append(ibeans.classes.index(filename.split("/")[1]))
-
-        train_images = np.array(train_images)
-        test_images = np.array(test_images)
-        valid_images = np.array(valid_images)
-
-        train_labels = np.array(train_labels)
-        test_labels = np.array(test_labels)
-        valid_labels = np.array(valid_labels)
-
-        print("Dataset ibeans loaded in {0:.2f}s.".format(time.time() - t0))
-
-        return (
-            train_images,
-            train_labels,
-            valid_images,
-            valid_labels,
-            test_images,
-            test_labels,
-        )
+    return dataset

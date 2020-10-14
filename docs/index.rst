@@ -18,8 +18,6 @@ Welcome to numpy-datasets' documentation!
 
 .. centered:: **Developer Guide** : :ref:`developer`
 
-.. centered:: **Updates Roadmap** : :ref:`roadmap`
-
 
 
 Tutorials

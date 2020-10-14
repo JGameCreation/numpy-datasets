@@ -14,7 +14,6 @@
    numpy_datasets.timeseries.esc.load
    numpy_datasets.timeseries.warblr.load
    numpy_datasets.timeseries.gtzan.load
-   numpy_datasets.timeseries.dclde.load
    numpy_datasets.timeseries.irmas.load
    numpy_datasets.timeseries.vocalset.load
    numpy_datasets.timeseries.freefield1010.load
@@ -23,7 +22,6 @@
    numpy_datasets.timeseries.seizures_neonatal.load
    numpy_datasets.timeseries.sonycust.load
    numpy_datasets.timeseries.gtzan.load
-   numpy_datasets.timeseries.FSDKaggle2018.load
    numpy_datasets.timeseries.TUTacousticscenes2017.load
 
 
@@ -38,7 +36,6 @@ Detailed description
 .. autofunction:: numpy_datasets.timeseries.esc.load
 .. autofunction:: numpy_datasets.timeseries.warblr.load
 .. autofunction:: numpy_datasets.timeseries.gtzan.load
-.. autofunction:: numpy_datasets.timeseries.dclde.load
 .. autofunction:: numpy_datasets.timeseries.irmas.load
 .. autofunction:: numpy_datasets.timeseries.vocalset.load
 .. autofunction:: numpy_datasets.timeseries.freefield1010.load
@@ -47,5 +44,4 @@ Detailed description
 .. autofunction:: numpy_datasets.timeseries.seizures_neonatal.load
 .. autofunction:: numpy_datasets.timeseries.sonycust.load
 .. autofunction:: numpy_datasets.timeseries.gtzan.load
-.. autofunction:: numpy_datasets.timeseries.FSDKaggle2018.load
 .. autofunction:: numpy_datasets.timeseries.TUTacousticscences2017.load

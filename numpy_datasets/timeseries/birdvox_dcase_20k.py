@@ -12,9 +12,33 @@ import time
 import zipfile
 from tqdm import tqdm
 from scipy.io.wavfile import read as wav_read
+from ..utils import download_dataset
 
 
-class birdvox_dcase_20k:
+_urls = {
+    "https://zenodo.org/record/1208080/files/BirdVox-DCASE-20k.zip?download=1": "BirdVox-DCASE-20k.zip",
+    "https://ndownloader.figshare.com/files/10853300": "data_labels.csv",
+}
+
+_name = "birdvox_dcase_20k"
+
+
+cite = """
+@inproceedings{lostanlen2018icassp,
+    title = {BirdVox-full-night: a dataset and benchmark for avian
+    flight call detection},
+    author = {Lostanlen, Vincent and Salamon, Justin and Farnsworth,
+    Andrew and Kelling, Steve and Bello, Juan Pablo},
+    booktitle = {Proc. IEEE ICASSP},
+    year = {2018},
+    published = {IEEE},
+    venue = {Calgary, Canada},
+    month = {April},
+    }
+    """
+
+
+def load(path=None):
     """Binary bird detection classification
 
     Dataset is 16.5Go compressed.
@@ -23,15 +47,6 @@ class birdvox_dcase_20k:
     clips
 
     Version 2.0, March 2018.
-
-    Created By
-
-    Vincent Lostanlen (1, 2, 3), Justin Salamon (2, 3), Andrew Farnsworth
-    (1), Steve Kelling (1), and Juan Pablo Bello (2, 3).
-
-    (1): Cornell Lab of Ornithology (CLO)
-    (2): Center for Urban Science and Progress, New York University
-    (3): Music and Audio Research Lab, New York University
 
     `link <https://wp.nyu.edu/birdvox>`_
 
@@ -95,105 +110,60 @@ class birdvox_dcase_20k:
     "BirdVox-full-night: a dataset and benchmark for avian flight call
     detection", Proc. IEEE ICASSP, 2018.
 
-    @inproceedings{lostanlen2018icassp,
-    title = {BirdVox-full-night: a dataset and benchmark for avian
-    flight call detection},
-    author = {Lostanlen, Vincent and Salamon, Justin and Farnsworth,
-    Andrew and Kelling, Steve and Bello, Juan Pablo},
-    booktitle = {Proc. IEEE ICASSP},
-    year = {2018},
-    published = {IEEE},
-    venue = {Calgary, Canada},
-    month = {April},
-    }
-
     The creation of this dataset was supported by NSF grants 1125098
     (BIRDCAST) and 1633259 (BIRDVOX), a Google Faculty Award, the Leon
     Levy Foundation, and two anonymous donors.
+    Parameters
+    ----------
+    path: str (optional)
+        default ($DATASET_PATH), the path to look for the data and
+        where the data will be downloaded if not present
+
+    Returns
+    -------
+
+    wavs: array
+        the waveforms in the time amplitude domain
+
+    labels: array
+        binary values representing the presence or not of an avian
+
+    recording: array
+        the file number from which the sample has been extracted
+
     """
 
-    @staticmethod
-    def download(path):
-        """
-        Download the Birdvox dataset and store the result into the given
-        path
+    if path is None:
+        path = os.environ["DATASET_PATH"]
 
-        Parameters
-        ----------
+    download_dataset(path, _name, _urls)
 
-            path: str
-                the path where the downloaded files will be stored. If the
-                directory does not exist, it is created.
-        """
+    t0 = time.time()
 
-        # Check if directory exists
-        if not os.path.isdir(path + "birdvox_dcase_20k"):
-            print("Creating birdvox_dcase_20k Directory")
-            os.mkdir(path + "birdvox_dcase_20k")
-        base = "https://zenodo.org/record/1208080/files/"
-        filename = "BirdVox-DCASE-20k.zip"
-        if not os.path.exists(path + "birdvox_dcase_20k/" + filename):
-            url = base + filename + "?download=1"
-            urllib.request.urlretrieve(url, path + "birdvox_dcase_20k/" + filename)
-        url = "https://ndownloader.figshare.com/files/10853300"
-        filename = "data_labels.csv"
-        if not os.path.exists(path + "birdvox_dcase_20k/" + filename):
-            urllib.request.urlretrieve(url, path + "birdvox_dcase_20k/" + filename)
+    # Loading the file
+    basefile = os.path.join(path, "birdvox_dcase_20k/BirdVox-DCASE-20k.zip")
+    wavs = list()
+    labels = np.loadtxt(
+        os.path.join(path, "birdvox_dcase_20k/data_labels.csv"),
+        skiprows=1,
+        delimiter=",",
+        dtype="str",
+    )
+    wav_names = list(labels[:, 0])
+    wav_labels = labels[:, 2].astype("int")
+    labels = list()
+    f = zipfile.ZipFile(basefile)
+    for name in tqdm(f.namelist(), ascii=True):
+        filename = name.split("/")[-1][:-4]
+        if ".wav" not in name or filename not in wav_names:
+            continue
+        byt = io.BytesIO(f.read(name))
+        wavs.append(wav_read(byt)[1].astype("float32"))
+        labels.append(wav_labels[wav_names.index(filename)])
 
-    @staticmethod
-    def load(path=None):
-        """
-        Parameters
-        ----------
-            path: str (optional)
-                default ($DATASET_PATH), the path to look for the data and
-                where the data will be downloaded if not present
+    wavs = np.array(wavs).astype("float32")
+    labels = np.array(labels).astype("int32")
 
-        Returns
-        -------
-
-            wavs: array
-                the waveforms in the time amplitude domain
-
-            labels: array
-                binary values representing the presence or not of an avian
-
-            recording: array
-                the file number from which the sample has been extracted
-
-        """
-
-        if path is None:
-            path = os.environ["DATASET_PATH"]
-
-        birdvox_dcase_20k.download(path)
-
-        t0 = time.time()
-
-        # Loading the file
-        basefile = path + "birdvox_dcase_20k/BirdVox-DCASE-20k.zip"
-        wavs = list()
-        labels = np.loadtxt(
-            path + "birdvox_dcase_20k/data_labels.csv",
-            skiprows=1,
-            delimiter=",",
-            dtype="str",
-        )
-        wav_names = list(labels[:, 0])
-        wav_labels = labels[:, 2].astype("int")
-        labels = list()
-        f = zipfile.ZipFile(basefile)
-        for name in tqdm(f.namelist(), ascii=True):
-            filename = name.split("/")[-1][:-4]
-            if ".wav" not in name or filename not in wav_names:
-                continue
-            byt = io.BytesIO(f.read(name))
-            wavs.append(wav_read(byt)[1].astype("float32"))
-            labels.append(wav_labels[wav_names.index(filename)])
-
-        wavs = np.array(wavs).astype("float32")
-        labels = np.array(labels).astype("int32")
-
-        print("Dataset birdvox_dcase_20k loaded in {0:.2f}s.".format(time.time() - t0))
-
-        return wavs, labels
+    print("Dataset birdvox_dcase_20k loaded in {0:.2f}s.".format(time.time() - t0))
+    dataset = {"wavs": wavs, "labels": labels}
+    return dataset

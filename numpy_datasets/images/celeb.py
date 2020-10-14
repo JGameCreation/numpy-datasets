@@ -40,42 +40,43 @@ def download(path: str) -> None:
 
 
 def load(path=None):
-    """
+    """face images with attributes
     CelebFaces Attributes Dataset (CelebA) is a large-scale face attributes dataset
-     with more than 200K celebrity images, each with 40 attribute annotations. The \
-    images in this dataset cover large pose variations and background clutter. \
-    CelebA has large diversities, large quantities, and rich annotations, including\
-     - 10,177 number of identities,
-     - 202,599 number of face images, and
-     - 5 landmark locations, 40 binary attributes annotations per image.
-    The dataset can be employed as the training and test sets for the following \
-    computer vision tasks: face attribute recognition, face detection, and landmark\
+     with more than 200K celebrity images, each with 40 attribute annotations. The
+    images in this dataset cover large pose variations and background clutter.
+    CelebA has large diversities, large quantities, and rich annotations, including
+    - 10,177 number of identities,
+    - 202,599 number of face images, and
+    - 5 landmark locations, 40 binary attributes annotations per image.
+    The dataset can be employed as the training and test sets for the following
+    computer vision tasks: face attribute recognition, face detection, and landmark
      (or facial part) localization.
     Note: CelebA dataset may contain potential bias. The fairness indicators
-    [example](https://github.com/tensorflow/fairness-indicators/blob/master/fairness_indicators/documentation/examples/Fairness_Indicators_TFCO_CelebA_Case_Study.ipynb)
+    `https://github.com/tensorflow/fairness-indicators/blob/master/fairness_indicators/documentation/examples/Fairness_Indicators_TFCO_CelebA_Case_Study.ipynb`
     goes into detail about several considerations to keep in mind while using the
     CelebA dataset.
+
     Parameters
     ----------
-        path: str (optional)
-            default ($DATASET_PATH), the path to look for the data and
-            where the data will be downloaded if not present
+
+    path: str (optional)
+        default ($DATASET_PATH), the path to look for the data and
+        where the data will be downloaded if not present
 
     Returns
     -------
 
-        train_images: array
+    train_images: array
 
-        train_labels: array
+    train_labels: array
 
-        valid_images: array
+    valid_images: array
 
-        valid_labels: array
+    valid_labels: array
 
-        test_images: array
+    test_images: array
 
-        test_labels: array
-
+    test_labels: array
     """
 
     if path is None:

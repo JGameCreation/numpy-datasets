@@ -40,22 +40,24 @@ def load(path=None):
     remaining images in random order, but some training batches may
     contain more images from one class than another. Between them, the
     training batches contain exactly 5000 images from each class.
+
     Parameters
     ----------
-        path: str (optional)
-            default ($DATASET_PATH), the path to look for the data and
-            where the data will be downloaded if not present
+
+    path: str (optional)
+        default ($DATASET_PATH), the path to look for the data and
+        where the data will be downloaded if not present
 
     Returns
     -------
 
-        train_images: array
+    train_images: array
 
-        train_labels: array
+    train_labels: array
 
-        test_images: array
+    test_images: array
 
-        test_labels: array
+    test_labels: array
 
     """
 
