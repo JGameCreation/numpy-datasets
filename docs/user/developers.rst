@@ -4,16 +4,16 @@ Development
 ===========
 
 
-The SymJAX project was started by Randall Balestriero in early 2020.
-As an open-source project, we highly welcome contributions (`current contributors <https://github.com/RandallBalestriero/SymJAX/graphs/contributors>`_) !
+The numpy-datasets project was started by Randall Balestriero in early 2020.
+As an open-source project, we highly welcome contributions (`current contributors <https://github.com/RandallBalestriero/numpy-datasets/graphs/contributors>`_) !
 
 
 Philosophy
 ----------
 
-SymJAX started from the need to combine the best functionalities
+numpy-datasets started from the need to combine the best functionalities
 of Theano, Tensorflow (v1) and Lasagne. While we propose various deep learning
-oriented methods, SymJAX shall remain as general as possible in its core,
+oriented methods, numpy-datasets shall remain as general as possible in its core,
 methods should be grouped as much as possible into specialized submodules, and
 a complete documentation should be provided, preferably along with a working example
 located in the Gallery.
@@ -29,7 +29,7 @@ If you are willing to help, we recommend to follow the following steps before re
 
 #. **Docstrings**: we use the `numpydoc docstring guide <https://numpydoc.readthedocs.io/en/latest/format.html>`_ for documenting the functions directly from the docstrings and automatically generating the documentation with `sphinx <https://www.sphinx-doc.org/en/master/>`_. Please provide codes with up-to-date docstrings.
 
-#. **Continuous Integration**: to ensure that all the SymJAX functionalities are tested after each modifition run ``pytest`` from the main SymJAX directory. All tests should pass before considering a change to be successful. If new functionalities are added, it is highly preferable to also add a simple test in the ``tests/`` directory to ensure that results are as expected. A Github action will automatically test the code at each ``push`` (see :ref:`testcode`).
+#. **Continuous Integration**: to ensure that all the numpy-datasets functionalities are tested after each modifition run ``pytest`` from the main numpy-datasets directory. All tests should pass before considering a change to be successful. If new functionalities are added, it is highly preferable to also add a simple test in the ``tests/`` directory to ensure that results are as expected. A Github action will automatically test the code at each ``push`` (see :ref:`testcode`).
 
 
 
@@ -57,7 +57,7 @@ if all tests pass, then the changes are ready to be put in a PR.
 Once the documentation has been changed and all tests pass, the change is ready
 for review and should be put in a PR.
 
-Every time changes are pushed to Github ``master`` branch the SymJAX
+Every time changes are pushed to Github ``master`` branch the numpy-datasets
 documentations (at `symjax.readthedocs.io <https://symjax.readthedocs.io/>`_) is rebuilt based on
 the ``.readthedocs.yml`` and the ``docs/conf.py`` configuration files.
 For each automated documentation build you can see the
@@ -71,7 +71,7 @@ Test the code
 '''''''''''''
 
 
-To run all the SymJAX tests, we recommend using ``pytest`` or ``pytest-xdist``. First, install ``pytest-xdist`` and ``pytest-benchmark`` by running
+To run all the numpy-datasets tests, we recommend using ``pytest`` or ``pytest-xdist``. First, install ``pytest-xdist`` and ``pytest-benchmark`` by running
 ``pip install pytest-xdist pytest-benchmark``.
 Then, from the repository root directory run::
 
