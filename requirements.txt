@@ -12,3 +12,4 @@ wheel
 black>=19.3b0; platform.python_implementation!='PyPy'
 versioneer
 matplotlib
+tqdm
