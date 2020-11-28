@@ -30,7 +30,7 @@ def download(path):
     # Check if file exists
     if not os.path.exists(path + "univariate_timeseries/Univariate2018_arff.zip"):
         td = time.time()
-        print("Creating univariate timeseries")
+        print("Downloading univariate timeseries")
         url = "http://www.timeseriesclassification.com/Downloads/Archives/Univariate2018_arff.zip"
         urllib.request.urlretrieve(
             url, path + "univariate_timeseries/Univariate2018_arff.zip"
@@ -65,7 +65,7 @@ def load(path=None):
     if path is None:
         path = os.environ["DATASET_PATH"]
 
-    univariate_timeseries.download(path)
+    download(path)
 
     t0 = time.time()
 
