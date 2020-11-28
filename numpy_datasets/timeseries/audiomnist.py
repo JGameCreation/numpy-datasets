@@ -19,7 +19,7 @@ def load(path=None):
         https://github.com/soerenab/AudioMNIST
 
     A simple audio/speech dataset consisting of recordings of spoken digits in
-    wav files at 8kHz. The recordings are trimmed so that they have near
+    wav files at 48kHz. The recordings are trimmed so that they have near
     minimal silence at the beginnings and ends.
 
     FSDD is an open dataset, which means it will grow over time as data is
