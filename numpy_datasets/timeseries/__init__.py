@@ -2,6 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from . import (
+    JapaneseVowels,
+    UrbanSound,
+    Phoneme,
+    MosquitoSound,
+    CatsDogs,
+    UCR_univariate,
+    UCR_multivariate,
     audiomnist,
     speech_commands,
     picidae,
@@ -18,5 +25,4 @@ from . import (
     dcase_2019_task4,
     vocalset,
     seizures_neonatal,
-    univariate_timeseries,
 )

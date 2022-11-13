@@ -1,14 +1,9 @@
 -e ./
-h5py==2.10.0
-imageio==2.6.1
+h5py>=2.10.0
+imageio>=2.6.1
 SoundFile==0.10.3.post1
-pytest==5.3.5
 mne==0.20.6
 requests==2.22.0
-scikit_learn==0.23.1
 pretty-midi==0.2.9
-wheel
-black>=19.3b0; platform.python_implementation!='PyPy'
-versioneer
 matplotlib
 tqdm
