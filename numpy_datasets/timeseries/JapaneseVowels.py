@@ -1,6 +1,7 @@
 import os
 from ..utils import download_dataset, load_from_tsfile_to_dataframe
 import pathlib
+import numpy as np
 
 
 def load(path=None):
@@ -48,4 +49,15 @@ def load(path=None):
     X_test, y_test = load_from_tsfile_to_dataframe(
         path / "JapaneseVowels/JapaneseVowels_TEST.ts"
     )
-    return (X_train, y_train), (X_test, y_test)
+    dims = []
+    for col in X_train.columns:
+        dims.append(np.stack(list(X_train[col].map(lambda x: x.reindex(range(29))))))
+    X_train = np.stack(dims, -1)
+    dims = []
+    for col in X_test.columns:
+        dims.append(np.stack(list(X_test[col].map(lambda x: x.reindex(range(29))))))
+    X_test = np.stack(dims, -1)
+    return (X_train, y_train), (
+        X_test,
+        y_test,
+    )
