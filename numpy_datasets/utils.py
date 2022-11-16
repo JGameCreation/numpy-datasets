@@ -59,6 +59,10 @@ def as_tuple(x, N, t=None):
     return X
 
 
+def to_numeric_classes(values):
+    return np.argmax(values[:, None] == np.unique(values), 1)
+
+
 def create_cmap(values, colors):
 
     from matplotlib.pyplot import Normalize
@@ -68,6 +72,15 @@ def create_cmap(values, colors):
     tuples = list(zip(map(norm, values), colors))
     cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", tuples)
     return cmap, norm
+
+
+def m4a_to_wav(filename):
+    m4a_file = "20211210_151013.m4a"
+    wav_filename = r"F:\20211210_151013.wav"
+    from pydub import AudioSegment
+
+    track = AudioSegment.from_file(m4a_file, format="m4a")
+    file_handle = track.export(wav_filename, format="wav")
 
 
 def patchify_1d(x, window_length, stride):
@@ -346,99 +359,6 @@ class batchify:
                 batch[i] = load_func(batch[i])
 
 
-def vq_to_boundary(states, N, M, duplicate=1):
-    # the following should take as input a collection of points
-    # in the input space and return a list of binary states, each
-    # element of the list is for 1 specific layer and it is a 2D array
-    if states.ndim > 1:
-        states = vq_to_values(states)
-    partitioning = values_to_boundary(
-        states.reshape((N, M)).astype("float32"), duplicate
-    )
-    return partitioning
-
-
-def values_to_boundary(x, duplicate=0):
-    # compute each directional (one step) derivative as a boolean mask
-    # representing jump from one region to another and add them (boolean still)
-    g_vertical = np.greater(
-        np.pad(np.abs(x[1:] - x[:-1]), ((1, 0), (0, 0)), "constant"), 0
-    )
-    g_horizontal = np.greater(
-        np.pad(np.abs(x[:, 1:] - x[:, :-1]), [[0, 0], [1, 0]], "constant"), 0
-    )
-    g_diagonaldo = np.greater(
-        np.pad(np.abs(x[1:, 1:] - x[:-1, :-1]), [[1, 0], [1, 0]], "constant"),
-        0,
-    )
-    g_diagonalup = np.greater(
-        np.pad(np.abs(x[:-1:, 1:] - x[1:, :-1]), [[1, 0], [1, 0]], "constant"),
-        0,
-    )
-    overall = g_vertical + g_horizontal + g_diagonaldo + g_diagonalup
-    if duplicate > 0:
-        overall = np.stack(
-            [np.roll(overall, k, 1) for k in range(duplicate + 1)]
-            + [np.roll(overall, k, 0) for k in range(duplicate + 1)]
-        ).sum(0)
-        overall[:duplicate] *= 0
-        overall[-duplicate:] *= 0
-        overall[:, :duplicate] *= 0
-        overall[:, -duplicate:] *= 0
-    return np.greater(overall, 0).astype("float32")
-
-
-def vq_to_values(states, vq_to_value_dict=None, return_dict=False):
-    """Given binary masks obtained for example from the ReLU activation,
-    convert the binary vectors to a single float scalar, the same scalar for
-    the same masks. This allows to drastically reduce the memory overhead to
-    keep track of a large number of masks. The mapping mask -> real is kept
-    inside a dict and thus allow to go from one to another. Thus given a large
-    collection of masks, one ends up with a large collection of scalars and
-    a mapping mask <-> real only for unique masks and thus allow reduced memory
-    requirements.
-
-    Parameters
-    ----------
-
-    states : bool matrix
-        the matrix of shape (#samples,#binary values). Thus if using a deep net
-        the masks of ReLU for all the layers must first be flattened prior
-        using this function.
-
-    vq_to_value_dict : dict
-        optional dict containing an already built mask <-> real mapping which
-        should be used and updated given the states value.
-
-    return_dict : bool
-        if the update/created dict should be return as part of the output
-
-    Returns
-    -------
-
-    values : scalar vector
-        a vector of length #samples in which each entry is the scalar
-        representation of the corresponding mask from states
-
-    vq_to_value_dict : dict (optional)
-        the newly created or updated dict mapping mask to value and vice-versa.
-
-
-    """
-    if vq_to_value_dict is None:
-        vq_to_value_dict = dict()
-    if "count" not in vq_to_value_dict:
-        vq_to_value_dict["count"] = 0
-    values = np.zeros(states.shape[0])
-    for i, state in enumerate(states):
-        str_s = "".join(state.astype("uint8").astype("str"))
-        if str_s not in vq_to_value_dict:
-            vq_to_value_dict[str_s] = vq_to_value_dict["count"]
-            vq_to_value_dict["count"] += 0.001
-        values[i] = vq_to_value_dict[str_s]
-    return values
-
-
 def resample_images(
     images,
     target_shape,
@@ -510,6 +430,11 @@ class _DownloadProgressBar(tqdm):
 
 
 def _download_url(url: str, filename: str):
+    if "drive.google.com" in url:
+        import gdown
+
+        gdown.download(url, str(filename), quiet=False)
+        return
     short_name = url.split("/")[-1]
     with _DownloadProgressBar(
         unit="B", unit_scale=True, miniters=1, desc=short_name
@@ -561,7 +486,7 @@ def extract_file(filename, target):
         tar.close()
     elif ext == ".zip":
         with zipfile.ZipFile(filename) as zip_file:
-            for member in zip_file.namelist():
+            for member in tqdm(zip_file.namelist(), desc="Extracting "):
                 if os.path.exists(target + r"/" + member) or os.path.isfile(
                     target + r"/" + member
                 ):

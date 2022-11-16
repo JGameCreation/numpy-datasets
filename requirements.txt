@@ -5,5 +5,5 @@ SoundFile==0.10.3.post1
 mne==0.20.6
 requests==2.22.0
 pretty-midi==0.2.9
-matplotlib
 tqdm
+pydub

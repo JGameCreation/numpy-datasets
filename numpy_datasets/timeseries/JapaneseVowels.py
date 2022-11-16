@@ -57,7 +57,4 @@ def load(path=None):
     for col in X_test.columns:
         dims.append(np.stack(list(X_test[col].map(lambda x: x.reindex(range(29))))))
     X_test = np.stack(dims, -1)
-    return (X_train, y_train), (
-        X_test,
-        y_test,
-    )
+    return (X_train, y_train), (X_test, y_test)
