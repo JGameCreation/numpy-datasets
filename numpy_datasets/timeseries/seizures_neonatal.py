@@ -3,7 +3,8 @@ import urllib.request
 import time
 import io
 from scipy.io import loadmat
-import mne
+
+# import mne
 from tqdm import tqdm
 from ..utils import download_dataset
 
