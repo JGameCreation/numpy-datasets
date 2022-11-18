@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from . import images, timeseries, utils, preprocess
+from . import images, timeseries, utils, preprocess, loader
 
 from ._version import get_versions
 
