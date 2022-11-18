@@ -6,7 +6,7 @@ import torch as ch
 
 
 def _mapit(batch):
-    return [b.to(device="cuda", non_blocking=True) for b in batch]
+    return [b.view(-1, *b.shape[2:]).to(device="cuda", non_blocking=True) for b in batch]
 
 
 class DatasetWithIndices:
@@ -45,11 +45,6 @@ class FastLoader:
 
     def __len__(self):
         return self.length
-
-
-# def collate_fn(device):
-#     ch.multiprocessing.set_start_method("spawn")  # good solution !!!!
-#     return fn
 
 
 def dataset_to_h5(dataset, h5file, num_workers=16, chunk_size=1024):
