@@ -66,10 +66,5 @@ def launcher(local_rank, option, node_rank=0, gpus=2):
 
 if __name__ == "__main__":
 
-    # tinet = ImageFolder("/datasets01/tinyimagenet/081318/val")
-    # nds.loader.dataset_to_h5(
-    #     tinet, "../../DATASETS/TINY_IMAGENET/val.hdf5", num_workers=16, chunk_size=4096
-    # )
-
     mp.spawn(launcher, args=(0,), nprocs=2, join=True)
     mp.spawn(launcher, args=(1,), nprocs=2, join=True)

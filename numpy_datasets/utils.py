@@ -11,6 +11,8 @@ import zipfile
 import pathlib
 import pandas as pd
 
+import torch as ch
+
 
 def as_tuple(x, N, t=None):
     """
@@ -1082,3 +1084,10 @@ def load_from_tsfile_to_dataframe(
             return data
     else:
         raise IOError("empty file")
+
+
+@ch.jit.script
+def base_two(x: ch.Tensor, bits: int):
+    with ch.no_grad():
+        mask = 2 ** ch.arange(bits).to(x.device, x.dtype)
+        return x.view(-1, 1).bitwise_and(mask).ne_(0).byte()

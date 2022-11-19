@@ -5,8 +5,11 @@ from tqdm import tqdm
 import torch as ch
 
 
-def _mapit(batch):
-    return [b.view(-1, *b.shape[2:]).to(device="cuda", non_blocking=True) for b in batch]
+def _mapit(batch: tuple) -> list:
+    with ch.no_grad():
+        return [
+            b.view(-1, *b.shape[2:]).to(device="cuda", non_blocking=True) for b in batch
+        ]
 
 
 class DatasetWithIndices:
@@ -51,24 +54,11 @@ def dataset_to_h5(dataset, h5file, num_workers=16, chunk_size=1024):
 
     nfiles = len(dataset)
 
-    def collate_fn(images):
-        data = np.empty(
-            (len(images), images[0][0].height, images[0][0].width, 3), dtype="uint8"
-        )
-        labels = np.empty((len(images),), dtype="uint")
-        indices = np.empty((len(images),), dtype="uint")
-        for i, (image, label, index) in enumerate(images):
-            data[i] = np.asarray(image)
-            labels[i] = label
-            indices[i] = index
-        return data, labels, indices
-
     loader = DataLoader(
         DatasetWithIndices(dataset),
         batch_size=chunk_size,
         shuffle=True,
         num_workers=num_workers,
-        collate_fn=collate_fn,
         drop_last=False,
     )
 
@@ -77,13 +67,11 @@ def dataset_to_h5(dataset, h5file, num_workers=16, chunk_size=1024):
 
         label_ds = h5f.create_dataset("labels", shape=(nfiles,), dtype=int)
         indices_ds = h5f.create_dataset("indices", shape=(nfiles,), dtype=int)
-
-        for i, (x, y, indices) in tqdm(
-            enumerate(loader), total=len(loader), desc="converting"
-        ):
-            h5f.create_dataset(f"images_{i}", data=x)
-            label_ds[i * num_workers : i * num_workers + len(y)] = y
-            indices_ds[i * num_workers : i * num_workers + len(y)] = indices
+        n = len(loader)
+        for i, (x, y, indices) in tqdm(enumerate(loader), total=n, desc="converting"):
+            h5f.create_dataset(f"images_{i}", data=x.numpy())
+            label_ds[i * chunk_size : i * chunk_size + len(y)] = y
+            indices_ds[i * chunk_size : i * chunk_size + len(y)] = indices
 
 
 class H5Dataset(Dataset):
@@ -117,26 +105,28 @@ class H5Dataset(Dataset):
     def __len__(self):
         return self.lens
 
+    @ch.no_grad()
     def __getitem__(self, idx):
+        idx *= self.chunkit
+        chunk = idx // self.chunk_size
+        index = idx - chunk * self.chunk_size
         with h5py.File(self.hdf5file, "r") as db:
 
             # unshuffle if needed
             if not self.shuffle:
                 idx = db[f"indices"][idx]
 
-            # figure out the position w.r.t. chunks
-            chunk = idx // self.chunk_size
-            index = idx - chunk * self.chunk_size
-
             # we take care of chunking options loading
             if self.chunkit > 1:
-                extra = np.random.choice(
-                    range(1, self.chunk_size), size=self.chunkit - 1, replace=False
+                chunk_size = len(db[f"{self.imgs_key}_{chunk}"])
+                indices = np.random.choice(
+                    range(1, chunk_size), size=self.chunkit - 1, replace=False
                 )
-                indices = np.concatenate([[index], index + extra]) % self.chunk_size
+                indices = np.concatenate([[index], index + indices]) % chunk_size
                 indices = np.sort(indices)
             else:
-                indices = [idx]
+                # figure out the position w.r.t. chunks
+                indices = np.array([index])
 
             # now proceed to load the data
             label = db[self.labels_key][indices + chunk * self.chunk_size]
