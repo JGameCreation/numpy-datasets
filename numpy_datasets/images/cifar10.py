@@ -68,7 +68,7 @@ def load(path=None):
 
     t0 = time.time()
 
-    tar = tarfile.open(os.path.join(path, _dataset, "cifar10.tar.gz"), "r:gz")
+    tar = tarfile.open(os.path.join(path, _dataset, "cifar-10-python.tar.gz"), "r:gz")
 
     # Load train set
     train_images = list()
