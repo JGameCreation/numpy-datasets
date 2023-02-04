@@ -444,7 +444,7 @@ def _download_url(url: str, filename: str):
         urllib.request.urlretrieve(url, filename=filename, reporthook=t.update_to)
 
 
-def download_dataset(path, name_url_mapper, prepend_url="", extract=False):
+def download_dataset(path, dataset_name, name_url_mapper, prepend_url="", extract=False):
     """dataset downlading utility
 
     Args:
@@ -461,6 +461,7 @@ def download_dataset(path, name_url_mapper, prepend_url="", extract=False):
         the common url to prepend onto each url (value) in name_url_mapper mapper
 
     """
+    path += dataset_name
     folder = pathlib.Path(path)
     folder.mkdir(parents=True, exist_ok=True)
 
